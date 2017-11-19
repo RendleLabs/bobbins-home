@@ -11,12 +11,14 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: bobbins/frontend:0.1
+        image: bobbins/frontend:0.2
         env:
           - name: Services__Links__BaseUrl
             value: "http://links"
           - name: Services__Comments__BaseUrl
             value: "http://comments"
+          - name: DataProtection__Redis
+            value: "redis"
           - name: ConnectionStrings__DefaultConnection
             valueFrom:
               secretKeyRef:
