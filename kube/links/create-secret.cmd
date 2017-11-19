@@ -1,0 +1,1 @@
+kubectl create secret generic links-db --from-literal=connstr="Host=postgres;Database=links;Username=bobbins;Password=secretsquirrel"

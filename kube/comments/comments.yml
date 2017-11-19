@@ -1,0 +1,35 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: comments
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: comments
+    spec:
+      containers:
+      - name: comments
+        image: bobbins/comments:0.1
+        env:
+          - name: ConnectionStrings__Comments
+            valueFrom:
+              secretKeyRef:
+                name: comments-db
+                key: connstr
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comments
+  labels:
+    app: comments
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: comments

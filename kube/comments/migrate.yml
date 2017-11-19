@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: comments-migrate
+spec:
+  template:
+    metadata:
+      name: comments-migrate
+    spec:
+      containers:
+      - name: comments-migrate
+        image: bobbins/comments-migrate:0.1
+        args: ["$(SECRET_CONNSTR)"]
+        env:
+          - name: SECRET_CONNSTR
+            valueFrom:
+              secretKeyRef:
+                name: comments-db
+                key: connstr
+      restartPolicy: OnFailure

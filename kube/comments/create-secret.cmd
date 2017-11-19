@@ -1,0 +1,1 @@
+kubectl create secret generic comments-db --from-literal=connstr="Host=postgres;Database=comments;Username=bobbins;Password=secretsquirrel"

@@ -1,0 +1,85 @@
+version: '3'
+
+services:
+
+  postgres:
+    image: postgres:9.6.5-alpine
+    environment:
+      POSTGRES_USER: bobbins
+      POSTGRES_PASSWORD: secretsquirrel
+    networks:
+      bobnet:
+  
+  frontend-migrate:
+    image: local/frontend-migrate
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile.migrate
+    command: "Host=postgres;Database=frontend;Username=bobbins;Password=secretsquirrel"
+    depends_on:
+      - postgres
+    networks: 
+      bobnet:
+    restart: "no"
+  
+  frontend:
+    image: local/frontend
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres;Database=frontend;Username=bobbins;Password=secretsquirrel"
+      Services__Links__BaseUrl: "http://links"
+      Services__Comments__BaseUrl: "http://comments"
+    ports:
+      - 5000:80
+    networks:
+      bobnet:
+
+  links-migrate:
+    image: local/links-migrate
+    build:
+      context: ./Links
+      dockerfile: Dockerfile.migrate
+    command: "Host=postgres;Database=links;Username=bobbins;Password=secretsquirrel"
+    depends_on:
+      - postgres
+    networks: 
+      bobnet:
+    restart: "no"
+  
+  links:
+    image: local/links
+    build:
+      context: ./Links
+      dockerfile: Dockerfile
+    environment:
+      ConnectionStrings__Links: "Host=postgres;Database=links;Username=bobbins;Password=secretsquirrel"
+    networks:
+      bobnet:
+
+  comments-migrate:
+    image: local/comments-migrate
+    build:
+      context: ./Comments
+      dockerfile: Dockerfile.migrate
+    command: "Host=postgres;Database=comments;Username=bobbins;Password=secretsquirrel"
+    depends_on:
+      - postgres
+    networks: 
+      bobnet:
+    restart: "no"
+  
+  comments:
+    image: local/comments
+    build:
+      context: ./Comments
+      dockerfile: Dockerfile
+    environment:
+      ConnectionStrings__Comments: "Host=postgres;Database=comments;Username=bobbins;Password=secretsquirrel"
+    networks:
+      bobnet:
+  
+networks:
+  bobnet:
+    driver: bridge

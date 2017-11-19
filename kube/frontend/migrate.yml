@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: frontend-migrate
+spec:
+  template:
+    metadata:
+      name: frontend-migrate
+    spec:
+      containers:
+      - name: frontend-migrate
+        image: bobbins/frontend-migrate:0.1
+        args: ["$(SECRET_CONNSTR)"]
+        env:
+          - name: SECRET_CONNSTR
+            valueFrom:
+              secretKeyRef:
+                name: frontend-db
+                key: connstr
+      restartPolicy: OnFailure

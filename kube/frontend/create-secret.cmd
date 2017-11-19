@@ -1,0 +1,1 @@
+kubectl create secret generic frontend-db --from-literal=connstr="Host=postgres;Database=frontend;Username=bobbins;Password=secretsquirrel"
